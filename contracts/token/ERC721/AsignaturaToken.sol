@@ -94,13 +94,13 @@ contract AsignaturaToken is ERC721Metadata {
         require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');
         require(_universidadesProfesores[universidad] != address(0), 'Profesor no configurado');
         
-        // uint256 anioMatricula = getAnioMatricula(msg.sender);
+        uint256 anioMatricula = getAnioMatricula(msg.sender);
         
         // obtener los tokens que el alumno debe entregar por la matrícula en la asignatura
-        // uint256 ectsNecesarios = _estadoSC.calcularECTSTokensParaAsignatura(universidad, _experimentabilidad, anioMatricula, _creditos);
+        uint256 ectsNecesarios = _estadoSC.calcularECTSTokensParaAsignatura(universidad, _experimentabilidad, anioMatricula, _creditos);
         
         // trasnferir los tokens
-        // _estadoSC.transferTokens(msg.sender, universidad, ectsNecesarios);
+        _estadoSC.transferTokens(msg.sender, universidad, ectsNecesarios);
         
         uint256 matriculaId = mintMatricula(universidad, _universidadesProfesores[universidad], msg.sender, cursoAcademico);
         
