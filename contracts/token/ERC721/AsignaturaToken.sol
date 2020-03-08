@@ -23,6 +23,7 @@ contract AsignaturaToken is ERC721Metadata {
         string cursoAcademico;
         uint256 anioMatricula;
         uint256 nota;
+        bool aprobado;
         bool evaluado;
         bool valida;
     }
@@ -51,7 +52,7 @@ contract AsignaturaToken is ERC721Metadata {
         _mint(universidad, nuevaMatriculaId);
 
         _matriculas[nuevaMatriculaId] = Asignatura(universidad, profesor, alumno, cursoAcademico,
-            _aniosMatricula[alumno], uint256(0), false, true);
+            _aniosMatricula[alumno], uint256(0), false, false, true);
 
         _aniosMatricula[alumno]++;
 
@@ -82,7 +83,7 @@ contract AsignaturaToken is ERC721Metadata {
         _universidadesProfesores[msg.sender] = _profesor;
     }
 
-    function getAnioMatricula(address _alumno) internal view returns (uint256) {
+    function getAnioMatricula(address _alumno) public view returns (uint256) {
         if(_aniosMatricula[_alumno] >= 3) return 3;
         else return _aniosMatricula[_alumno];
     }
@@ -122,21 +123,28 @@ contract AsignaturaToken is ERC721Metadata {
         return matriculaId;
     }
 
-    function evaluar(address alumno, uint256 matriculaId, uint256 convocatoria, uint256 nota) public {
-        require(convocatoria <= 2, 'El número de convocatorias no puede ser mayor de 2');
+    function getMatricula(uint256 matriculaId) public view returns (address universidad, address profesor, address alumno, uint256 nota, bool aprobado, bool evaluado) {
+        require(_matriculas[matriculaId].valida, 'Matriculo no registrada');
+        return (_matriculas[matriculaId].universidad, _matriculas[matriculaId].profesor, _matriculas[matriculaId].alumno,
+            _matriculas[matriculaId].nota, _matriculas[matriculaId].aprobado, _matriculas[matriculaId].evaluado);
+    }
+
+    function evaluar(address alumno, uint256 matriculaId, uint256 nota) public {
         require(_matriculas[matriculaId].valida, 'Matrícula no valida');
         require(_matriculas[matriculaId].alumno == alumno, 'Matrícula no pertenece al alumno');
         require(_matriculas[matriculaId].profesor == msg.sender, 'Profesor no asociado a la Matrícula');
-        require(_matriculas[matriculaId].evaluado == false, 'Asignatura evaluada');
+        require(_estadoSC.isProfesor(msg.sender), 'Profesor no registrado');
+        require(_matriculas[matriculaId].evaluado == false, 'Asignatura ya evaluada');
         require(nota <= 1000, 'Nota máxima 10 (10000)');
-
 
         _matriculas[matriculaId].nota = nota;
         _matriculas[matriculaId].evaluado = true;
 
         // si se ha aprobado la asignatura se transfiere el token al alumno
         if(nota >= 500) {
-            transferFrom(_matriculas[matriculaId].universidad, alumno, matriculaId);
+            _matriculas[matriculaId].aprobado = true;
+            // permitir al sc realizar el traspaso
+            // transferFrom(_matriculas[matriculaId].universidad, alumno, matriculaId);
         }
     }
 

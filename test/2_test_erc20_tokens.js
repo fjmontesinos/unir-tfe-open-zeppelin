@@ -17,12 +17,12 @@ contract("Tokens ERC20", accounts => {
         ects.setEstado(estado.address);
     });
 
-    it("configuración correcta", async() => {
+    it("estado::configuración correcta", async() => {
         const a = await ects.getEstado();
         assert.equal(a, estado.address);
     });
 
-    it("calcular weis x créditos", async() => {
+    it("alumno::calcular weis x créditos", async() => {
         await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
         const base = 6800000000000;
         const decimales = 10000;
@@ -31,7 +31,7 @@ contract("Tokens ERC20", accounts => {
         assert.equal(weis, creditos * decimales * base);
     });
 
-    it("comprar tokens ects", async() => {
+    it("alumno::comprar tokens ects", async() => {
         await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
         await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
         const decimales = 10000;
