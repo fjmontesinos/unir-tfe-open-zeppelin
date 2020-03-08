@@ -45,8 +45,17 @@ module.exports = {
         development: {
             host: "127.0.0.1", // Localhost (default: none)
             port: 8545, // Standard Ethereum port (default: none)
-            network_id: "*", // Any network (default: none)            
+            network_id: "*", // Any network (default: none)
         },
+
+        alastrialocal: {
+            host: "127.0.0.1",
+            port: 22001,
+            network_id: "*",
+            gas: 0xfffff,
+            gasPrice: 0x0,
+            from: "0x74d4c56d8dcbc10a567341bfac6da0a8f04dc41d"
+        }
 
         // Another network with more advanced options...
         // advanced: {
