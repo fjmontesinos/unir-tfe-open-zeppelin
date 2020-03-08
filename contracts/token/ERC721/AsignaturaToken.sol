@@ -27,9 +27,9 @@ contract AsignaturaToken is ERC721Metadata {
         bool valida;
     }
 
-    mapping (uint256 => Asignatura) public _matriculas;
-    mapping (address => uint256) public _aniosMatricula;
-    mapping (address => address) public _universidadesProfesores;
+    mapping (uint256 => Asignatura) private _matriculas;
+    mapping (address => uint256) private _aniosMatricula;
+    mapping (address => address) private _universidadesProfesores;
 
     event AlumnoMatriculado(address universidad, address profesor, address alumno, string cursoAcademico, uint256 matriculaId);
 
@@ -65,6 +65,13 @@ contract AsignaturaToken is ERC721Metadata {
     }
 
     /**
+     * @dev Retorna el profesor configurado para una universidad
+     */
+    function getProfesorUniversidad(address universidad) public view returns (address) {
+        return _universidadesProfesores[universidad];
+    }
+
+    /**
      * @dev Permite actualizar el profesor de una asignatura en una universidad
      **/
     function updateProfesor(address _profesor) public {
@@ -89,6 +96,11 @@ contract AsignaturaToken is ERC721Metadata {
         _;
     }
 
+    /**
+    * @dev Permite a un alumno matricularse en el sistema previo pago de los tokens necesarios
+    *
+    *
+    */
     function matricular(address universidad, string memory cursoAcademico) public returns (uint256) {
         require(_estadoSC.isUniversidad(universidad), 'Universidad no registrada');
         require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');

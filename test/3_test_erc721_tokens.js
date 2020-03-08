@@ -34,4 +34,23 @@ contract("Tokens ERC721", accounts => {
         assert.equal(symbol, 'CAL1');
     });
 
+    it("registrar universidad - profesor en asignatura", async() => {
+        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
+        await estado.crearAsignatura("Calculo 1", "CAL1", 7, 0);
+        const asignaturas = await estado.getAsignaturas();
+        let a = await AsignaturaToken.at(asignaturas[0]);
+
+        await a.registrarUniversidadProfesor(accounts[1], accounts[2], { from: accounts[0] });
+        const profesor = await a.getProfesorUniversidad(accounts[1], { from: accounts[0] });
+        assert.equal(profesor, accounts[2]);
+
+    });
+
+    it("matricular en asignatura", async() => {
+        // await estado.crearAsignatura("Calculo 1", "CAL1", 7, 0);
+        assert.equal(1, 1);
+
+    });
+
 });
