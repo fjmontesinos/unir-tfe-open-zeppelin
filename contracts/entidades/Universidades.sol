@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 contract Universidades {
     using SafeMath for uint256;
-    
+
     uint256 ectsTokenDecimals = 10 ** uint256(4);
 
     event PrecioExperimentabilidadActualizado(address _cuenta, uint8 _tipoPrecio, uint256 _precio);
@@ -112,7 +112,7 @@ contract Universidades {
 
         emit PrecioAnioMatriculaActualizado(msg.sender, _anio, _precio);
     }
-    
+
     /**
      * @dev Actualiza para la cuenta facilitada como parámetro el recargo en wei por traspaso de asignatura
      *
@@ -135,9 +135,9 @@ contract Universidades {
         require(universidades[_universidad].valido, 'Universidad no registrada');
         return _creditos.mul(ectsTokenDecimals).mul(universidades[_universidad].precioCredito);
     }
-    
+
     /**
-     * @dev Calcula el total de Tokens ECTSToken necesarios para matricularnos en una universidad en una asignatura, con 
+     * @dev Calcula el total de Tokens ECTSToken necesarios para matricularnos en una universidad en una asignatura, con
      * un grado de experimentabilidad concreto, en un año de matrícula concreto y para la cual se necesitan unos créditos concretos.
      *
      * Validaciones:
@@ -148,14 +148,14 @@ contract Universidades {
         uint256 _experimentabilidad, uint256 _anioMatricula, uint256 _creditos) public view returns (uint256) {
         require(universidades[_universidad].valido, 'Universidad no registrada');
         require(_creditos > 0, 'Créditos debe ser > 0');
-        
+
         return _creditos.mul(universidades[_universidad].preciosExperimentabilidad[_experimentabilidad].mul(universidades[_universidad].preciosAnioMatricula[_anioMatricula]));
     }
-    
+
     function isUniversidad(address _cuenta) public view returns (bool){
         return universidades[_cuenta].valido;
     }
-    
+
     /**
      * Modificador para verificar que la cuenta corresponde con una universidad valida
      * */

@@ -38,18 +38,18 @@ contract ERC20 is IERC20, Ownable {
     mapping (address => mapping (address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
-    
+
     address private _estadoAddress;
     Estado private _estadoSC;
-    
+
     // permitirá almacenar los tokens adquiridos por cada alumno en cada una de las universidades
     mapping (address => mapping (address => uint256)) private _tokensUsuarioPorUniversidad;
-    
+
     function setEstado(address estadoAddress) public onlyOwner {
         _estadoAddress = estadoAddress;
         _estadoSC = Estado(estadoAddress);
     }
-    
+
     function getEstado() public view returns (address) {
         return _estadoAddress;
     }
@@ -114,7 +114,7 @@ contract ERC20 is IERC20, Ownable {
      */
     function transferFrom(address sender, address recipient, uint256 amount) public  notIsAlumno returns (bool) {
         _transfer(sender, recipient, amount);
-        
+
         // fj2m 20200301
         // si el operador de administración es cero i.e. no se ha definido o el
         // usuario que llama a la función no es el operador de administación del estado se verifica la aprobación
@@ -183,37 +183,37 @@ contract ERC20 is IERC20, Ownable {
 
         _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
         _balances[recipient] = _balances[recipient].add(amount);
-        
+
         // fj2m - 20200301
         // cambiar los balances de tokens de alumnos por _tokensUsuarioPorUniversidad
         if(_estadoSC.isAlumno(recipient)) {
-            // el alumno recibe tokens de la universidad 
+            // el alumno recibe tokens de la universidad
             if(_tokensUsuarioPorUniversidad[recipient][sender] > 0) {
                 // si ya tenía tokens se añaden
                 // todo analizar por que el método SafeMath.add no funciona aquí
                 uint256 valorActual = _tokensUsuarioPorUniversidad[recipient][sender];
-                uint256 valorNuevo = valorActual + amount;   
+                uint256 valorNuevo = valorActual + amount;
                 require(valorNuevo >= valorActual, "ECTSERC20: addition overflow");
                 _tokensUsuarioPorUniversidad[recipient][sender] = valorNuevo;
-                
+
             } else {
                 // si no tenía todavía tokens se inicializa
                 _tokensUsuarioPorUniversidad[recipient][sender] = amount;
             }
-            
+
         } else if (_estadoSC.isAlumno(sender)) {
             // el alumno entrega tokens a la universidad por matrícula -> se restan del balance de este respecto a la universidad
             // previamente se verifica que el alumno dispone de tokens para la universidad.
             require(_tokensUsuarioPorUniversidad[sender][recipient] >= amount, "ERC20: transfer amount exceeds balance (Alumno)");
-            
+
             // todo verificar que el sub si funciona correctamente
             uint256 valorActual = _tokensUsuarioPorUniversidad[sender][recipient];
             _tokensUsuarioPorUniversidad[sender][recipient] = valorActual - amount;
         }
-        
+
         emit Transfer(sender, recipient, amount);
     }
-    
+
     /** @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
      *
@@ -301,7 +301,7 @@ contract ERC20 is IERC20, Ownable {
      * To learn more about hooks, head to xref:ROOT:using-hooks.adoc[Using Hooks].
      */
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal  { }
-    
+
     /**
      * @dev Throws si se llama por una cuenta registrada como alumno.
      * fj2m 20200301
@@ -310,28 +310,28 @@ contract ERC20 is IERC20, Ownable {
         require(! _estadoSC.isAlumno(msg.sender), "Alumno: llamada realizada por un alumno");
         _;
     }
-    
+
     /**
      * @dev Throws si se llama por una cuenta que no sea el operador de administración o el owner del token.
      * fj2m 20200301
      */
     modifier onlyEstado(){
-        require(msg.sender == _estadoAddress || msg.sender == owner(), 
+        require(msg.sender == _estadoAddress || msg.sender == owner(),
             'Esta llamada está permitida solo al operador de administración del estado y al owner');
         _;
     }
-    
+
     /**
      * @dev Obtiene los tokens de un alumno para una universidad concreta
-     * 
+     *
      * Valiaciones:
-     * 
+     *
      * Se verifica que el msg.sender sea o bien el operador de administración o el owner del token
-     * 
+     *
      * fj2m 20200301
      */
     function getTokenAlumnoPorUniversidad(address _alumno, address _universidad) public view onlyEstado returns (uint256) {
         return _tokensUsuarioPorUniversidad[_alumno][_universidad];
-        
+
     }
 }
