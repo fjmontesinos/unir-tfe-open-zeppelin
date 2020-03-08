@@ -3,18 +3,15 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/drafts/Counters.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./ERC721Metadata.sol";
-import "../../Estado.sol";
 
 contract AsignaturaToken is ERC721Metadata {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
     address private _owner;
-    address private _estadoAddress;
-    Estado private _estadoSC;
-
     uint256 private _creditos;
     uint256 private _experimentabilidad;
+    uint256 internal _notaMinimaAprobado = 500;
 
     struct Asignatura {
         address universidad;
@@ -41,8 +38,7 @@ contract AsignaturaToken is ERC721Metadata {
             _creditos = creditos;
             _experimentabilidad = experimentabilidad;
             _owner = owner;
-            _estadoSC = Estado(estadoAddress);
-            _estadoAddress = estadoAddress;
+            setEstado(estadoAddress);
         }
 
     function mintMatricula(address universidad, address profesor, address alumno, string memory cursoAcademico) public returns (uint256) {
@@ -113,7 +109,7 @@ contract AsignaturaToken is ERC721Metadata {
         uint256 ectsNecesarios = _estadoSC.calcularECTSTokensParaAsignatura(universidad, _experimentabilidad, anioMatricula, _creditos);
 
         // trasnferir los tokens
-        _estadoSC.transferTokens(msg.sender, universidad, ectsNecesarios);
+        _estadoSC.transferECTSTokens(msg.sender, universidad, ectsNecesarios);
 
         uint256 matriculaId = mintMatricula(universidad, _universidadesProfesores[universidad], msg.sender, cursoAcademico);
 
@@ -141,10 +137,10 @@ contract AsignaturaToken is ERC721Metadata {
         _matriculas[matriculaId].evaluado = true;
 
         // si se ha aprobado la asignatura se transfiere el token al alumno
-        if(nota >= 500) {
+        if(nota >= _notaMinimaAprobado) {
             _matriculas[matriculaId].aprobado = true;
-            // permitir al sc realizar el traspaso
-            // transferFrom(_matriculas[matriculaId].universidad, alumno, matriculaId);
+            // traspasar el token de la universidad al alumno
+            _estadoSC.transferAsginaturaToken(address(this), _matriculas[matriculaId].universidad, alumno, matriculaId);
         }
     }
 

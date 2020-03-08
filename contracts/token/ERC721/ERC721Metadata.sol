@@ -1,9 +1,10 @@
 pragma solidity ^0.5.0;
 
 import "@openzeppelin/contracts/GSN/Context.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Metadata.sol";
 import "@openzeppelin/contracts/introspection/ERC165.sol";
+import "../../Estado.sol";
 
 contract ERC721Metadata is Context, ERC165, ERC721, IERC721Metadata {
     // Token name

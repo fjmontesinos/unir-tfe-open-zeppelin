@@ -179,10 +179,18 @@ contract("Tokens ERC721", accounts => {
         assert.equal(evaluado, true);
         // verificar que ya está evaluado
         assert.equal(aprobado, true);
+
+        // obtener el erc721 del alumno cuyo propietario debe ser el alumno
+        const ownerTokenERC721 = await a.ownerOf(1);
+        assert.equal(ownerTokenERC721, accounts[3]);
+
+        // verificar que el balance de la alumno es 1
+        const balanceOfAlu = (await a.balanceOf(accounts[3])).toString();
+        assert.equal(1, balanceOfAlu);
     });
 
     it("alumno::solicitar traslado de asignatura", async() => {
-        assert.equal(1, 1);
+        assert.equal(1, 0, 'Pendiente de desarrollar');
     });
 
 });
