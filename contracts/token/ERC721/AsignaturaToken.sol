@@ -144,4 +144,16 @@ contract AsignaturaToken is ERC721Metadata {
         }
     }
 
+    /**
+     * @dev Solicitar traslado de la matrícula a otra universidad
+     */
+    function trasladar(uint256 matriculaId, address universidadDestino) public {
+        require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');
+        require(_estadoSC.isUniversidad(universidadDestino), 'Universidad no registrada');
+        require(_matriculas[matriculaId].valida, 'Matrícula no valida');
+        require(_matriculas[matriculaId].alumno == msg.sender, 'Matrícula no pertenece al alumno');
+
+        _estadoSC.transferAsginaturaToken(address(this), msg.sender, universidadDestino, matriculaId);
+    }
+
 }

@@ -190,7 +190,48 @@ contract("Tokens ERC721", accounts => {
     });
 
     it("alumno::solicitar traslado de asignatura", async() => {
-        assert.equal(1, 0, 'Pendiente de desarrollar');
+        // registrar las entidades del sistema
+        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[4], "UNEX", { from: accounts[0] });
+
+        // adquirir tokens el alumno a la universidad
+        const creditos = 10;
+        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
+        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+
+        // crear una asignatura por parte del estado
+        const creditosAsignatura = 7;
+        const experimentabilidad = 0;
+        await estado.crearAsignatura("Calculo 1", "CAL1", creditosAsignatura, experimentabilidad);
+        const asignaturas = await estado.getAsignaturas();
+        let a = await AsignaturaToken.at(asignaturas[0]);
+
+        // registrar una universidad y profesor para la asignatura
+        await a.registrarUniversidadProfesor(accounts[1], accounts[2], { from: accounts[0] });
+
+        // matricular
+        await a.matricular(accounts[1], '19-20', { from: accounts[3] });
+        const matriculaId = 1;
+
+        const notaFinal = 700;
+        await a.evaluar(accounts[3], matriculaId, notaFinal, { from: accounts[2] });
+        const matricula = await a.getMatricula(matriculaId);
+        const nota = parseInt(matricula.nota.toString());
+        const aprobado = matricula.aprobado;
+        const evaluado = matricula.evaluado;
+
+        // trasladar a la universidad UNED la asignatura
+        await a.trasladar(matriculaId, accounts[4], { from: accounts[3] });
+
+        // obtener el erc721 del alumno cuyo propietario debe ser la universidad
+        const ownerTokenERC721 = await a.ownerOf(1);
+        assert.equal(ownerTokenERC721, accounts[4]);
+
+        // verificar que el balance de la universidad uned es 1
+        const balanceOfAlu = (await a.balanceOf(accounts[4])).toString();
+        assert.equal(1, balanceOfAlu);
     });
 
 });
