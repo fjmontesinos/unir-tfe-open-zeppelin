@@ -59,7 +59,6 @@ $ truffle(development)> let a = await AsignaturaToken.at("0x3C4f47E398622ecbE4A0
 Estado - Registrar universidad y profesor para una asignatura en AsignaturaToken
 $ truffle(development)> a.registrarUniversidadProfesor(accounts[1],accounts[2], {from:accounts[0]})
 
-# TODO pendiente de testear
 Alumno - Matricular en una asignatura por parte de un alumno en AsignaturaToken
 $ truffle(development)> a.matricular(accounts[1], '19-20', {from:accounts[3]})
 
@@ -74,3 +73,6 @@ $ truffle(development)> (await ects.balanceOf(accounts[1])).toString()
 
 Verificar Balance para la universidad en ECTSToken del alumno: 
 $ truffle(development)> (await ects.getTokenAlumnoPorUniversidad(accounts[3],accounts[1])).toString()
+
+## TODO dev and test
+Alumno - solicitar traslado de una asignatura a otra universidad
