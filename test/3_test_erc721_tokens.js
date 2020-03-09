@@ -218,6 +218,9 @@ contract("Tokens ERC721", accounts => {
         const notaFinal = 700;
         await a.evaluar(accounts[3], matriculaId, notaFinal, { from: accounts[2] });
 
+        // registrar la universidad y profesor para la asignatura
+        await a.registrarUniversidadProfesor(accounts[4], accounts[2], { from: accounts[0] });
+
         // trasladar a la universidad UNED la asignatura
         await a.trasladar(matriculaId, accounts[4], { from: accounts[3] });
 
