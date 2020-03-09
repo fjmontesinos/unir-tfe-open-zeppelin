@@ -217,10 +217,6 @@ contract("Tokens ERC721", accounts => {
 
         const notaFinal = 700;
         await a.evaluar(accounts[3], matriculaId, notaFinal, { from: accounts[2] });
-        const matricula = await a.getMatricula(matriculaId);
-        const nota = parseInt(matricula.nota.toString());
-        const aprobado = matricula.aprobado;
-        const evaluado = matricula.evaluado;
 
         // trasladar a la universidad UNED la asignatura
         await a.trasladar(matriculaId, accounts[4], { from: accounts[3] });
@@ -232,6 +228,10 @@ contract("Tokens ERC721", accounts => {
         // verificar que el balance de la universidad uned es 1
         const balanceOfAlu = (await a.balanceOf(accounts[4])).toString();
         assert.equal(1, balanceOfAlu);
+
+        // verificar que consta la universidad en la matricula del alumno
+        const matricula = await a.getMatricula(matriculaId);
+        assert.equal(accounts[4], matricula.universidad);
     });
 
 });

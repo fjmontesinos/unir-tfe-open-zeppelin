@@ -153,6 +153,8 @@ contract AsignaturaToken is ERC721Metadata {
         require(_matriculas[matriculaId].valida, 'Matrícula no valida');
         require(_matriculas[matriculaId].alumno == msg.sender, 'Matrícula no pertenece al alumno');
 
+        _matriculas[matriculaId].universidad = universidadDestino;
+
         _estadoSC.transferAsginaturaToken(address(this), msg.sender, universidadDestino, matriculaId);
     }
 
