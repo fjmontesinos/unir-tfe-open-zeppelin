@@ -150,7 +150,7 @@ contract AsignaturaToken is ERC721Metadata {
     function trasladar(uint256 matriculaId, address universidadDestino) public {
         require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');
         require(_estadoSC.isUniversidad(universidadDestino), 'Universidad no registrada');
-        require(_matriculas[matriculaId].valida, 'Matrícula no valida');
+        require(_matriculas[matriculaId].aprobado, 'Matrícula no aprobada');
         require(_matriculas[matriculaId].alumno == msg.sender, 'Matrícula no pertenece al alumno');
         require(_universidadesProfesores[universidadDestino] != address(0), 'La universidad no ofrece esta asignatura');
 
