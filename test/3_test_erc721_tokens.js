@@ -137,7 +137,7 @@ contract("Tokens ERC721", accounts => {
         assert.equal(nota, notaFinal);
         // verificar que ya está evaluado
         assert.equal(evaluado, true);
-        // verificar que ya está evaluado
+        // verificar que no está aprobado
         assert.equal(aprobado, false);
     });
 
@@ -177,7 +177,7 @@ contract("Tokens ERC721", accounts => {
         assert.equal(nota, notaFinal);
         // verificar que ya está evaluado
         assert.equal(evaluado, true);
-        // verificar que ya está evaluado
+        // verificar que ya está aprobado
         assert.equal(aprobado, true);
 
         // obtener el erc721 del alumno cuyo propietario debe ser el alumno
