@@ -14,9 +14,9 @@ contract Estado is Universidades, Profesores, Alumnos {
     mapping (address => bool) _asignaturas;
     address[] _asignaturasList;
 
-    event UniversidadRegistrada(address _cuenta, string _nombre, uint256 _precioCredito);
-    event AlumnoRegistrado(address _cuenta, string _nombre);
-    event ProfesorRegistrado(address _cuenta, string _nombre);
+    event UniversidadRegistrada(address _cuenta, uint256 _precioCredito);
+    event AlumnoRegistrado(address _cuenta);
+    event ProfesorRegistrado(address _cuenta);
     event TokensComprados(address _alumno, address _universidad, uint256 _tokens);
 
     constructor(address _ectsTokenAddress) public {
@@ -38,12 +38,12 @@ contract Estado is Universidades, Profesores, Alumnos {
      *
      * - `_cuenta` No debe corresponder con una universidad ya registrada
      */
-    function registrarUniversidad(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarUniversidad(address _cuenta) public onlyOwner {
         require(!universidades[_cuenta].valido, 'Universidad ya registrada');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
         uint256 precioBase = _ectsToken.getPrecioBaseECTSToken();
-        universidades[_cuenta] = Universidad(_cuenta, _nombre, precioBase,
+        universidades[_cuenta] = Universidad(_cuenta, precioBase,
             [uint256(100), uint256(100), uint256(100), uint256(100)],
             [uint256(100), uint256(100), uint256(100), uint256(100)],
             true);
@@ -52,7 +52,7 @@ contract Estado is Universidades, Profesores, Alumnos {
         // Se inicializan los créditos que la universidad podrá utilizar para ofertar sus asignaturas
         _ectsToken.transferFrom(_owner, _cuenta, _ectsToken.getCreditosInicialesUniversidad());
 
-        emit UniversidadRegistrada(_cuenta, _nombre, precioBase);
+        emit UniversidadRegistrada(_cuenta, precioBase);
     }
 
     /**
@@ -64,28 +64,28 @@ contract Estado is Universidades, Profesores, Alumnos {
      *
      * - `_cuenta` No debe corresponder con un alumno ya registrado
      */
-    function registrarAlumno(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarAlumno(address _cuenta) public onlyOwner {
         require(!alumnos[_cuenta].valido, 'Alumno ya registrado');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
-        alumnos[_cuenta] = Alumno(_cuenta, _nombre, true);
+        alumnos[_cuenta] = Alumno(_cuenta, true);
         alumnosList.push(_cuenta);
 
-        emit AlumnoRegistrado(_cuenta, _nombre);
+        emit AlumnoRegistrado(_cuenta);
     }
 
     /**
      *
      *
      */
-    function registrarProfesor(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarProfesor(address _cuenta) public onlyOwner {
         require(!profesores[_cuenta].valido, 'Profesor ya registrado');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
-        profesores[_cuenta] = Profesor(_cuenta, _nombre, true);
+        profesores[_cuenta] = Profesor(_cuenta, true);
         profesoresList.push(_cuenta);
 
-        emit ProfesorRegistrado(_cuenta, _nombre);
+        emit ProfesorRegistrado(_cuenta);
     }
 
     /**

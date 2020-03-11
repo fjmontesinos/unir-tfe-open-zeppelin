@@ -23,7 +23,7 @@ contract("Tokens ERC20", accounts => {
     });
 
     it("alumno::calcular weis x créditos", async() => {
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
         const base = 6800000000000;
         const decimales = 10000;
         const creditos = 10;
@@ -32,8 +32,8 @@ contract("Tokens ERC20", accounts => {
     });
 
     it("alumno::comprar tokens ects", async() => {
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
         const decimales = 10000;
         const creditos = 10;
         const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();

@@ -23,19 +23,19 @@ contract("Registro de Entidades", accounts => {
     });
 
     it("estado::registrar universidad", async() => {
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
         const universidades = await estado.getUniversidades();
         assert.equal(universidades[0], accounts[1]);
     });
 
     it("estado::registrar profesor", async() => {
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
         const profesores = await estado.getProfesores();
         assert.equal(profesores[0], accounts[2]);
     });
 
     it("estado::registrar alumno", async() => {
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
         const alumnos = await estado.getAlumnos();
         assert.equal(alumnos[0], accounts[3]);
     });

@@ -13,7 +13,6 @@ contract Universidades {
 
     struct Universidad {
         address cuenta;
-        string nombre;
         uint256 precioCredito;
         uint256[4] preciosExperimentabilidad;
         uint256[4] preciosAnioMatricula;
@@ -37,10 +36,9 @@ contract Universidades {
      *
      * - `_cuenta` debe corresponder con una universidad registrada y valida
      */
-    function getUniversidad(address _cuenta) public view returns (string memory, uint256) {
+    function getPrecioCredio(address _cuenta) public view returns (uint256) {
         require(universidades[_cuenta].valido, 'Universidad no registrada');
-        return (universidades[_cuenta].nombre,
-            universidades[_cuenta].precioCredito);
+        return universidades[_cuenta].precioCredito;
     }
 
     /**
@@ -50,10 +48,9 @@ contract Universidades {
      *
      * - `_cuenta` debe corresponder con una universidad registrada y valida
      */
-    function getUniPreciosExperimentabilidad(address _cuenta) public view returns (string memory, uint256, uint256, uint256, uint256) {
+    function getUniPreciosExperimentabilidad(address _cuenta) public view returns (uint256, uint256, uint256, uint256) {
         require(universidades[_cuenta].valido, 'Universidad no registrada');
-        return (universidades[_cuenta].nombre,
-            universidades[_cuenta].preciosExperimentabilidad[0],
+        return (universidades[_cuenta].preciosExperimentabilidad[0],
             universidades[_cuenta].preciosExperimentabilidad[1],
             universidades[_cuenta].preciosExperimentabilidad[2],
             universidades[_cuenta].preciosExperimentabilidad[3]);
@@ -66,10 +63,9 @@ contract Universidades {
      *
      * - `_cuenta` debe corresponder con una universidad registrada y valida
      */
-    function getUniPreciosAnioMatricula(address _cuenta) public view returns (string memory, uint256, uint256, uint256, uint256) {
+    function getUniPreciosAnioMatricula(address _cuenta) public view returns (uint256, uint256, uint256, uint256) {
         require(universidades[_cuenta].valido, 'Universidad no registrada');
-        return (universidades[_cuenta].nombre,
-            universidades[_cuenta].preciosAnioMatricula[0],
+        return (universidades[_cuenta].preciosAnioMatricula[0],
             universidades[_cuenta].preciosAnioMatricula[1],
             universidades[_cuenta].preciosAnioMatricula[2],
             universidades[_cuenta].preciosAnioMatricula[3]);

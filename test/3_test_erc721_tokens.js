@@ -36,8 +36,8 @@ contract("Tokens ERC721", accounts => {
 
     it("estado::registrar universidad - profesor en asignatura", async() => {
         const creditosAsignatura = 7;
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
         await estado.crearAsignatura("Calculo 1", "CAL1", creditosAsignatura, 0);
         const asignaturas = await estado.getAsignaturas();
         let a = await AsignaturaToken.at(asignaturas[0]);
@@ -50,9 +50,9 @@ contract("Tokens ERC721", accounts => {
 
     it("alumno::matricular en asignatura", async() => {
         // registrar las entidades del sistema
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
         const creditos = 10;
@@ -103,9 +103,9 @@ contract("Tokens ERC721", accounts => {
 
     it("profesor::evaluar nota final de asignatura::suspenso", async() => {
         // registrar las entidades del sistema
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
         const creditos = 10;
@@ -143,9 +143,9 @@ contract("Tokens ERC721", accounts => {
 
     it("profesor::evaluar nota final de asignatura::aprobado", async() => {
         // registrar las entidades del sistema
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
         const creditos = 10;
@@ -191,10 +191,10 @@ contract("Tokens ERC721", accounts => {
 
     it("alumno::solicitar traslado de asignatura:aprobado", async() => {
         // registrar las entidades del sistema
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
-        await estado.registrarUniversidad(accounts[4], "UNEX", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[4], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
         const creditos = 10;
@@ -239,10 +239,10 @@ contract("Tokens ERC721", accounts => {
 
     it("alumno::solicitar traslado de asignatura:no aprobado", async() => {
         // registrar las entidades del sistema
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarProfesor(accounts[2], "Javier Montesinos", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
-        await estado.registrarUniversidad(accounts[4], "UNEX", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarProfesor(accounts[2], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[4], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
         const creditos = 10;
