@@ -18,6 +18,7 @@ contract Estado is Universidades, Profesores, Alumnos {
     event AlumnoRegistrado(address _cuenta);
     event ProfesorRegistrado(address _cuenta);
     event TokensComprados(address _alumno, address _universidad, uint256 _tokens);
+    event AsignaturaCreada(address _address, string nombre, string simbolo, uint256 creditos, uint256 experimentabilidad);
 
     constructor(address _ectsTokenAddress) public {
         _ectsToken = ECTSToken(_ectsTokenAddress);
@@ -122,6 +123,11 @@ contract Estado is Universidades, Profesores, Alumnos {
 
         _asignaturasList.push(address(asignaturaSC));
         _asignaturas[address(asignaturaSC)] = true;
+
+        address a = address(asignaturaSC);
+
+        emit AsignaturaCreada(a, _name, _symbol, _creditos, _experimentabilidad);
+
         return address(asignaturaSC);
     }
 
