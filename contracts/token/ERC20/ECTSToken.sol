@@ -16,8 +16,8 @@ contract ECTSToken is ERC20, ERC20Detailed {
     // precio base en weis de la mínima parte de un crédito ETCS
     // tendremos 10000 ECTSToken representan 1 Token completo
     // se inicializa en 14 euros el ECTSToken i.e. los 10000
-    // que son 0,068 ethers -> un ECTSToken son 68000000000000000
-    // así pues la mínima parte de un ECTSToken son 6800000000000
+    // que son 0,068 ethers -> un ECTSToken son 120000000000000000
+    // así pues la mínima parte de un ECTSToken son 12000000000000
     uint256 _precioBaseECTSToken = uint256(6800000000000);
 
     constructor () ERC20Detailed("Créditos Universitarios Token", "ECTS", 4) public {
@@ -28,8 +28,16 @@ contract ECTSToken is ERC20, ERC20Detailed {
      * @dev Obtiene los créditos iniciales para asignar a una maxUniversidades
      *
      **/
-    function getCreditosInicialesUniversidad() public view onlyEstado returns (uint256) {
+    function getTokensInicialesUniversidad() public view onlyEstado returns (uint256) {
         return _maxCreditosCurso.mul(_maxAlumnos).mul(_maxGrados).mul(10 ** uint256(decimals()));
+    }
+
+    /**
+     * @dev Obtiene los créditos iniciales para asignar a una maxUniversidades
+     *
+     **/
+    function getTokensInicialesAlumno() public view onlyEstado returns (uint256) {
+        return (10 ** uint256(decimals()));
     }
 
     /**

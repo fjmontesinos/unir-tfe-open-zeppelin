@@ -55,9 +55,9 @@ contract("Tokens ERC721", accounts => {
         await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
-        const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+        const tokens = 100000;
+        const weis = (await estado.calcularTokensToWeis(accounts[1], tokens)).toString();
+        await estado.comprarTokens(accounts[1], tokens, { from: accounts[3], value: weis });
 
         // balance de tokens del alumno, la universidad y el alumno para la universidad tras adquirir los tokens
         const balanceUni = (await ects.balanceOf(accounts[1])).toString();
@@ -107,10 +107,9 @@ contract("Tokens ERC721", accounts => {
         await estado.registrarProfesor(accounts[2], { from: accounts[0] });
         await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
-        // adquirir tokens el alumno a la universidad
-        const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+        const tokens = 100000;
+        const weis = (await estado.calcularTokensToWeis(accounts[1], tokens)).toString();
+        await estado.comprarTokens(accounts[1], tokens, { from: accounts[3], value: weis });
 
         // crear una asignatura por parte del estado
         const creditosAsignatura = 7;
@@ -148,9 +147,9 @@ contract("Tokens ERC721", accounts => {
         await estado.registrarAlumno(accounts[3], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
-        const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+        const tokens = 100000;
+        const weis = (await estado.calcularTokensToWeis(accounts[1], tokens)).toString();
+        await estado.comprarTokens(accounts[1], tokens, { from: accounts[3], value: weis });
 
         // crear una asignatura por parte del estado
         const creditosAsignatura = 7;
@@ -197,9 +196,9 @@ contract("Tokens ERC721", accounts => {
         await estado.registrarUniversidad(accounts[4], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
-        const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+        const tokens = 100000;
+        const weis = (await estado.calcularTokensToWeis(accounts[1], tokens)).toString();
+        await estado.comprarTokens(accounts[1], tokens, { from: accounts[3], value: weis });
 
         // crear una asignatura por parte del estado
         const creditosAsignatura = 7;
@@ -245,9 +244,9 @@ contract("Tokens ERC721", accounts => {
         await estado.registrarUniversidad(accounts[4], { from: accounts[0] });
 
         // adquirir tokens el alumno a la universidad
-        const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
+        const tokens = 100000;
+        const weis = (await estado.calcularTokensToWeis(accounts[1], tokens)).toString();
+        await estado.comprarTokens(accounts[1], tokens, { from: accounts[3], value: weis });
 
         // crear una asignatura por parte del estado
         const creditosAsignatura = 7;

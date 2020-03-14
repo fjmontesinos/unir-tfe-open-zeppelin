@@ -127,9 +127,9 @@ contract Universidades {
      *
      * - `_cuenta` debe corresponder con una universidad registrada y valida
      */
-    function calcularCreditosToWeis(address _universidad, uint256 _creditos) public view returns (uint256) {
+    function calcularTokensToWeis(address _universidad, uint256 _tokens) public view returns (uint256) {
         require(universidades[_universidad].valido, 'Universidad no registrada');
-        return _creditos.mul(ectsTokenDecimals).mul(universidades[_universidad].precioCredito);
+        return _tokens.mul(universidades[_universidad].precioCredito);
     }
 
     /**

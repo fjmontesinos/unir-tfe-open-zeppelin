@@ -29,6 +29,7 @@ contract AsignaturaToken is ERC721Metadata {
     mapping (address => uint256) private _aniosMatricula;
     mapping (address => address) private _universidadesProfesores;
 
+    event UniversidadRegistrada(address universidad, address profesor, address asignatura);
     event AlumnoMatriculado(address universidad, address profesor, address alumno, string cursoAcademico, uint256 matriculaId);
 
     constructor(string memory name, string memory symbol, uint256 creditos, uint256 experimentabilidad, address owner, address estadoAddress)
