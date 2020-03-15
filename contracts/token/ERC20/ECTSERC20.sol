@@ -313,4 +313,19 @@ contract ERC20 is IERC20 {
         return _tokensUsuarioPorUniversidad[_alumno][_universidad];
 
     }
+
+    /**
+     * @dev Obtiene los tokens de un alumno para una universidad concreta llamada realizada por el proipo alumno
+     *
+     * Valiaciones:
+     *
+     * Se verifica que el msg.sender sea un alumno
+     *
+     * fj2m 20200301
+     */
+    function getTokensPorUniversidad(address _universidad) public view  returns (uint256) {
+        require(_estadoSC.isAlumno(msg.sender), "Alumno: llamada NO realizada por un alumno");
+        return _tokensUsuarioPorUniversidad[msg.sender][_universidad];
+
+    }
 }
