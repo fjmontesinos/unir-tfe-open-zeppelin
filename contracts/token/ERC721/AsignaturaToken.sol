@@ -29,7 +29,9 @@ contract AsignaturaToken is ERC721Metadata {
     mapping (address => uint256) private _aniosMatricula;
     mapping (address => address) private _universidadesProfesores;
 
-    event AlumnoMatriculado(address universidad, address profesor, address alumno, string cursoAcademico, uint256 matriculaId);
+    event UniversidadRegistrada(address universidad, address profesor, address asignatura);
+    event AlumnoMatriculado(address universidad, address profesor, address asignatura,
+                            address alumno, string cursoAcademico, uint256 matriculaId);
 
     constructor(string memory name, string memory symbol, uint256 creditos, uint256 experimentabilidad, address owner, address estadoAddress)
         ERC721Metadata(name, symbol)
@@ -113,13 +115,16 @@ contract AsignaturaToken is ERC721Metadata {
 
         uint256 matriculaId = mintMatricula(universidad, _universidadesProfesores[universidad], msg.sender, cursoAcademico);
 
-        emit AlumnoMatriculado(universidad, _universidadesProfesores[universidad], msg.sender, cursoAcademico, matriculaId);
+        emit AlumnoMatriculado(universidad, _universidadesProfesores[universidad], address(this), msg.sender, cursoAcademico, matriculaId);
 
         // crear la matricula
         return matriculaId;
     }
 
-    function getMatricula(uint256 matriculaId) public view returns (address universidad, address profesor, address alumno, uint256 nota, bool aprobado, bool evaluado) {
+    function getMatricula(uint256 matriculaId) public view returns (address universidad,
+                                                                    address profesor, address alumno,
+                                                                    uint256 nota, bool aprobado,
+                                                                    bool evaluado) {
         require(_matriculas[matriculaId].valida, 'Matriculo no registrada');
         return (_matriculas[matriculaId].universidad, _matriculas[matriculaId].profesor, _matriculas[matriculaId].alumno,
             _matriculas[matriculaId].nota, _matriculas[matriculaId].aprobado, _matriculas[matriculaId].evaluado);
@@ -142,6 +147,21 @@ contract AsignaturaToken is ERC721Metadata {
             // traspasar el token de la universidad al alumno
             _estadoSC.transferAsginaturaToken(address(this), _matriculas[matriculaId].universidad, alumno, matriculaId);
         }
+    }
+
+    /**
+     * @dev Solicitar traslado de la matrícula a otra universidad
+     */
+    function trasladar(uint256 matriculaId, address universidadDestino) public {
+        require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');
+        require(_estadoSC.isUniversidad(universidadDestino), 'Universidad no registrada');
+        require(_matriculas[matriculaId].aprobado, 'Matrícula no aprobada');
+        require(_matriculas[matriculaId].alumno == msg.sender, 'Matrícula no pertenece al alumno');
+        require(_universidadesProfesores[universidadDestino] != address(0), 'La universidad no ofrece esta asignatura');
+
+        _matriculas[matriculaId].universidad = universidadDestino;
+
+        _estadoSC.transferAsginaturaToken(address(this), msg.sender, universidadDestino, matriculaId);
     }
 
 }

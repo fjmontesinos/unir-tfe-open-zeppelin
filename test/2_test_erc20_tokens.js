@@ -23,32 +23,31 @@ contract("Tokens ERC20", accounts => {
     });
 
     it("alumno::calcular weis x créditos", async() => {
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
         const base = 6800000000000;
-        const decimales = 10000;
         const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
-        assert.equal(weis, creditos * decimales * base);
+        const weis = (await estado.calcularTokensToWeis(accounts[1], creditos)).toString();
+        assert.equal(weis, creditos * base);
     });
 
     it("alumno::comprar tokens ects", async() => {
-        await estado.registrarUniversidad(accounts[1], "UNIR", { from: accounts[0] });
-        await estado.registrarAlumno(accounts[3], "Keti Crespo", { from: accounts[0] });
-        const decimales = 10000;
+        await estado.registrarUniversidad(accounts[1], { from: accounts[0] });
+        await estado.registrarAlumno(accounts[3], { from: accounts[0] });
         const creditos = 10;
-        const weis = (await estado.calcularCreditosToWeis(accounts[1], creditos)).toString();
+        const weis = (await estado.calcularTokensToWeis(accounts[1], creditos)).toString();
 
         const balanceUni1 = (await ects.balanceOf(accounts[1])).toString();
+        const balanceAlu1 = (await ects.balanceOf(accounts[3])).toString();
 
         await estado.comprarTokens(accounts[1], creditos, { from: accounts[3], value: weis });
 
         const balanceUni2 = (await ects.balanceOf(accounts[1])).toString();
-        const balanceAlu = (await ects.balanceOf(accounts[3])).toString();
+        const balanceAlu2 = (await ects.balanceOf(accounts[3])).toString();
 
         const balanceAluXUni = (await ects.getTokenAlumnoPorUniversidad(accounts[3], accounts[1], { from: accounts[0] })).toString();
 
-        assert.equal(balanceUni1, parseInt(balanceUni2) + parseInt(balanceAlu));
-        assert.equal(balanceAlu, balanceAluXUni);
+        assert.equal(parseInt(balanceUni1) + parseInt(balanceAlu1), parseInt(balanceUni2) + parseInt(balanceAlu2));
+        assert.equal(balanceAlu2, balanceAluXUni);
     });
 
 });

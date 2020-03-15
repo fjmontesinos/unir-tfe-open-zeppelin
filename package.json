@@ -12,7 +12,7 @@
   "author": "Javier Montesinos",
   "license": "ISC",
   "devDependencies": {
-    "@openzeppelin/contracts": "^2.5.0",
+    "@openzeppelin/contracts": "^2.3.0",
     "truffle-assertions": "^0.9.2"
   }
 }

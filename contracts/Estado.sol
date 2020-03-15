@@ -14,10 +14,11 @@ contract Estado is Universidades, Profesores, Alumnos {
     mapping (address => bool) _asignaturas;
     address[] _asignaturasList;
 
-    event UniversidadRegistrada(address _cuenta, string _nombre, uint256 _precioCredito);
-    event AlumnoRegistrado(address _cuenta, string _nombre);
-    event ProfesorRegistrado(address _cuenta, string _nombre);
+    event UniversidadRegistrada(address _cuenta, uint256 _precioCredito);
+    event AlumnoRegistrado(address _cuenta);
+    event ProfesorRegistrado(address _cuenta);
     event TokensComprados(address _alumno, address _universidad, uint256 _tokens);
+    event AsignaturaCreada(address asignatura, string nombre, string simbolo, uint256 creditos, uint256 experimentabilidad);
 
     constructor(address _ectsTokenAddress) public {
         _ectsToken = ECTSToken(_ectsTokenAddress);
@@ -38,21 +39,21 @@ contract Estado is Universidades, Profesores, Alumnos {
      *
      * - `_cuenta` No debe corresponder con una universidad ya registrada
      */
-    function registrarUniversidad(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarUniversidad(address _cuenta) public onlyOwner {
         require(!universidades[_cuenta].valido, 'Universidad ya registrada');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
         uint256 precioBase = _ectsToken.getPrecioBaseECTSToken();
-        universidades[_cuenta] = Universidad(_cuenta, _nombre, precioBase,
-            [uint256(100), uint256(100), uint256(100), uint256(100)],
-            [uint256(100), uint256(100), uint256(100), uint256(100)],
+        universidades[_cuenta] = Universidad(_cuenta, precioBase,
+            [uint256(100), uint256(110), uint256(120), uint256(130)],
+            [uint256(100), uint256(110), uint256(120), uint256(130)],
             true);
         univesidadesList.push(_cuenta);
 
         // Se inicializan los créditos que la universidad podrá utilizar para ofertar sus asignaturas
-        _ectsToken.transferFrom(_owner, _cuenta, _ectsToken.getCreditosInicialesUniversidad());
+        _ectsToken.transferFrom(_owner, _cuenta, _ectsToken.getTokensInicialesUniversidad());
 
-        emit UniversidadRegistrada(_cuenta, _nombre, precioBase);
+        emit UniversidadRegistrada(_cuenta, precioBase);
     }
 
     /**
@@ -64,28 +65,28 @@ contract Estado is Universidades, Profesores, Alumnos {
      *
      * - `_cuenta` No debe corresponder con un alumno ya registrado
      */
-    function registrarAlumno(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarAlumno(address _cuenta) public onlyOwner {
         require(!alumnos[_cuenta].valido, 'Alumno ya registrado');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
-        alumnos[_cuenta] = Alumno(_cuenta, _nombre, true);
+        alumnos[_cuenta] = Alumno(_cuenta, true);
         alumnosList.push(_cuenta);
 
-        emit AlumnoRegistrado(_cuenta, _nombre);
+        emit AlumnoRegistrado(_cuenta);
     }
 
     /**
      *
      *
      */
-    function registrarProfesor(address _cuenta, string memory _nombre) public onlyOwner {
+    function registrarProfesor(address _cuenta) public onlyOwner {
         require(!profesores[_cuenta].valido, 'Profesor ya registrado');
         require(_cuenta != address(0), 'Dirección 0x no permitida');
 
-        profesores[_cuenta] = Profesor(_cuenta, _nombre, true);
+        profesores[_cuenta] = Profesor(_cuenta, true);
         profesoresList.push(_cuenta);
 
-        emit ProfesorRegistrado(_cuenta, _nombre);
+        emit ProfesorRegistrado(_cuenta);
     }
 
     /**
@@ -99,18 +100,18 @@ contract Estado is Universidades, Profesores, Alumnos {
      * - `msg.sender` debe corresponder con un alumno registrado y valido
      * - `msg.value` debe corresponder de forma exacta con el precio en weis de los tokens vendidos por la universidad
      */
-    function comprarTokens(address payable _universidad, uint256 _creditos) public payable {
+    function comprarTokens(address payable _universidad, uint256 _tokens) public payable {
         require(alumnos[msg.sender].valido, 'Alumno no registrado');
         require(universidades[_universidad].valido, 'Universidad no registrada');
-        require(msg.value == calcularCreditosToWeis(_universidad, _creditos), 'El ether debe ser exacto');
+        require(msg.value == calcularTokensToWeis(_universidad, _tokens), 'El ether debe ser exacto');
 
         // trasnferir los tokens al alumno
-        _ectsToken.transferFrom(_universidad, msg.sender, _creditos.mul(ectsTokenDecimals));
+        _ectsToken.transferFrom(_universidad, msg.sender, _tokens);
 
         // transfer el ether a la universidad
         _universidad.transfer(msg.value);
 
-        emit TokensComprados(msg.sender, _universidad, _creditos.mul(ectsTokenDecimals));
+        emit TokensComprados(msg.sender, _universidad, _tokens);
     }
 
     /**
@@ -122,6 +123,11 @@ contract Estado is Universidades, Profesores, Alumnos {
 
         _asignaturasList.push(address(asignaturaSC));
         _asignaturas[address(asignaturaSC)] = true;
+
+        address a = address(asignaturaSC);
+
+        emit AsignaturaCreada(a, _name, _symbol, _creditos, _experimentabilidad);
+
         return address(asignaturaSC);
     }
 

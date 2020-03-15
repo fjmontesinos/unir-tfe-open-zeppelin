@@ -4,7 +4,6 @@ contract Profesores {
 
     struct Profesor {
         address cuenta;
-        string nombre;
         bool valido; // comprueba si el miembro es Ok.
     }
 
@@ -16,11 +15,6 @@ contract Profesores {
 
     function getProfesores() public view returns (address[] memory) {
         return profesoresList;
-    }
-
-    function getProfesor(address _cuenta) public view returns (string memory) {
-        require(profesores[_cuenta].valido, 'Profesor no registrado');
-        return (profesores[_cuenta].nombre);
     }
 
     function isProfesor(address _cuenta) public view returns (bool){
