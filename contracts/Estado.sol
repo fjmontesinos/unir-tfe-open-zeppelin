@@ -132,12 +132,16 @@ contract Estado is Universidades, Profesores, Alumnos {
     }
 
     function transferECTSTokens(address _from, address _to, uint256 _amount) public {
+        require(_asignaturas[msg.sender] == true, 'Sender debe ser una asignatura registrada');
+
         // pasar los tokens del alumno a la universidad
         _ectsToken.transferFrom(_from, _to, _amount);
     }
 
-    function transferAsginaturaToken(address asignaturaAddress, address _from, address _to, uint256 _matriculaId) public {
-        AsignaturaToken asignaturaSC = AsignaturaToken(asignaturaAddress);
+    function transferAsginaturaToken(address _from, address _to, uint256 _matriculaId) public {
+        require(_asignaturas[msg.sender] == true, 'Sender debe ser una asignatura registrada');
+
+        AsignaturaToken asignaturaSC = AsignaturaToken(msg.sender);
         // pasar el token el alumno a la univesidad
         asignaturaSC.transferFrom(_from, _to, _matriculaId);
     }

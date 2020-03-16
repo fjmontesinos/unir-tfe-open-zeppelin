@@ -145,7 +145,7 @@ contract AsignaturaToken is ERC721Metadata {
         if(nota >= _notaMinimaAprobado) {
             _matriculas[matriculaId].aprobado = true;
             // traspasar el token de la universidad al alumno
-            _estadoSC.transferAsginaturaToken(address(this), _matriculas[matriculaId].universidad, alumno, matriculaId);
+            _estadoSC.transferAsginaturaToken(_matriculas[matriculaId].universidad, alumno, matriculaId);
         }
     }
 
@@ -161,7 +161,7 @@ contract AsignaturaToken is ERC721Metadata {
 
         _matriculas[matriculaId].universidad = universidadDestino;
 
-        _estadoSC.transferAsginaturaToken(address(this), msg.sender, universidadDestino, matriculaId);
+        _estadoSC.transferAsginaturaToken(msg.sender, universidadDestino, matriculaId);
     }
 
 }
