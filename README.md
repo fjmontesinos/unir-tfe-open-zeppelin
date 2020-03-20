@@ -1,3 +1,9 @@
+# TFE - Experto Universitario en Desarrollo de Aplicaciones Blockchain
+
+Este repositorio recoge el TFE elaborado en el Experto Universitario en Desarrollo de Aplicaciones Blockchain en la Universidad UNIR de la promoción de octubre / 2019 a marzo / 2020
+
+En la carpeta docs se recoge la memoria entregada; [Memoria TFE Javier Montesinos](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/docs)
+
 ## address ganache-cli
 
 (0) 0x722dFbc5865d6C3aD046D1bFE4805937F8aA1765 (100 ETH)
@@ -11,14 +17,14 @@
 (8) 0x57DFceF625DF5b46ceDDa237C5A53da589e71B09 (100 ETH)
 (9) 0x53A29C2BbA64d4e43Daf6295367613132f05a0C4 (100 ETH)
 
-## Proceso
+## Pruebas
 
 ### Desplegar los SC
 Desplegar SC Token ERC20 ECTSToken
 Desplegar SC Administracion (informando address del SC ECTSToken)
 Establecer address estado en el SC ECTSToken
 
-$ truffle migration --network=development --reset
+$ truffle migration --network development --reset
 
 ### Registrar entidades
 Cargar la instancia del contrato
@@ -73,6 +79,3 @@ $ truffle(development)> (await ects.balanceOf(accounts[1])).toString()
 
 Verificar Balance para la universidad en ECTSToken del alumno: 
 $ truffle(development)> (await ects.getTokenAlumnoPorUniversidad(accounts[3],accounts[1])).toString()
-
-## TODO dev and test
-Alumno - solicitar traslado de una asignatura a otra universidad
