@@ -1,10 +1,12 @@
-# TFE - Experto Universitario en Desarrollo de Aplicaciones Blockchain
+# TFE - Experto Universitario en Desarrollo de Aplicaciones Blockchain - Blockchain
 
 Este repositorio recoge el desarrollo blockchain del TFE elaborado en el Experto Universitario en Desarrollo de Aplicaciones Blockchain en la Universidad UNIR de la promoción de octubre / 2019 a marzo / 2020
 
 En la carpeta docs se recoge la memoria del proyecto; [Memoria TFE Javier Montesinos](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/docs)
 
 El objetivo principal del proyecto es establecer un sistema basado en blockchain que permita la digitalización de títulos académicos basandonos en el uso de tokens ERC20 para la matriculación en las diferentes asignaturas que componen un grado y de tokens ERC721 para identificar las asignaturas aprobadas por los alumnos.
+
+En el repositorio [unir-tfe-dapp](https://github.com/fjmontesinos/unir-tfe-dapp) se encuentra el código necesario para la dapp desarrollando con Angular 8.
 
 ## Tests 
 
