@@ -8,7 +8,11 @@ El objetivo principal del proyecto es establecer un sistema basado en blockchain
 
 ## Tests 
 
-A continuación se recogen diferentes ejemplos de pruebas que se pueden realizar desde truffle console. No obstante estas pruebas se encuentran recogidas en los [tests](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/test) correspondientes del proyecto.
+A continuación se recogen diferentes ejemplos de pruebas que se pueden realizar desde truffle console. No obstante estas pruebas se encuentran recogidas en los [tests](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/test) correspondientes del proyecto y se pueden lanzar mediante el comando:
+
+```console
+$ truffle test --network development --reset
+```
 
 ### 1. Desplegar los SC
 Desplegar SC Token ERC20 ECTSToken

@@ -8,12 +8,18 @@ import "./token/ERC721/AsignaturaToken.sol";
 
 contract Estado is Universidades, Profesores, Alumnos {
 
+    // owner del sc
     address private _owner;
+
+    // instancia del sc asociado a los tokens ERC20 ECTSToken
     ECTSToken private _ectsToken;
 
+    // registro de asignaturas mintadas on-chain
     mapping (address => bool) _asignaturas;
+    // array de asignaturas para recuperar todas las asignaturas mintadas
     address[] _asignaturasList;
 
+    // eventos
     event UniversidadRegistrada(address _cuenta, uint256 _precioCredito);
     event AlumnoRegistrado(address _cuenta);
     event ProfesorRegistrado(address _cuenta);
@@ -25,6 +31,10 @@ contract Estado is Universidades, Profesores, Alumnos {
         _owner = msg.sender;
     }
 
+    /**
+     * @dev Retorna el array de las direcciones de los SC de asignaturas creadas
+     *
+     */
     function getAsignaturas() public view returns (address[] memory) {
         return _asignaturasList;
     }
@@ -76,8 +86,13 @@ contract Estado is Universidades, Profesores, Alumnos {
     }
 
     /**
+     * @dev Registra un profesor en el sistema
      *
+     * Emite el evento {ProfesorRegistrado} indicando el profesor que se ha registrado
      *
+     * Validaciones:
+     *
+     * - `_cuenta` No debe corresponder con un profesor ya registrado
      */
     function registrarProfesor(address _cuenta) public onlyOwner {
         require(!profesores[_cuenta].valido, 'Profesor ya registrado');
@@ -115,8 +130,13 @@ contract Estado is Universidades, Profesores, Alumnos {
     }
 
     /**
-     * @dev Crea nuevas asignaturas
+     * @dev Crea nueva asignatura
      *
+     * Emite el evento {AsignaturaCreada} indicando la dirección del SC asociado a la asignatura creada, su nombre, símbolo, cŕeditos y la experimentalidad
+     *
+     * Validaciones:
+     *
+     * - `msg.sender` debe corresponder con el owner del contrato
      **/
     function crearAsignatura(string memory _name, string memory _symbol, uint256 _creditos, uint256 _experimentabilidad) public onlyOwner returns (address) {
         AsignaturaToken asignaturaSC = new AsignaturaToken(_name, _symbol, _creditos, _experimentabilidad, _owner, address(this));
@@ -131,6 +151,13 @@ contract Estado is Universidades, Profesores, Alumnos {
         return address(asignaturaSC);
     }
 
+    /**
+     * @dev Transfiere tokens ECTS de una dirección a otra para que al matricular en una asignatura se puedan pasar los tokens de un alumno a una universidad
+     *
+     * Validaciones:
+     *
+     * - `msg.sender` debe corresponder con un sc registrado como asignatura ERC721
+     **/
     function transferECTSTokens(address _from, address _to, uint256 _amount) public {
         require(_asignaturas[msg.sender] == true, 'Sender debe ser una asignatura registrada');
 
@@ -138,6 +165,13 @@ contract Estado is Universidades, Profesores, Alumnos {
         _ectsToken.transferFrom(_from, _to, _amount);
     }
 
+    /**
+     * @dev Transfiere tokens AsignaturaToken (ERC721) de una dirección a otra cuando se aprueba una asignatura o cuano se solicita un traslado
+     *
+     * Validaciones:
+     *
+     * - `msg.sender` debe corresponder con un sc registrado como asignatura ERC721
+     **/
     function transferAsginaturaToken(address _from, address _to, uint256 _matriculaId) public {
         require(_asignaturas[msg.sender] == true, 'Sender debe ser una asignatura registrada');
 
@@ -146,6 +180,13 @@ contract Estado is Universidades, Profesores, Alumnos {
         asignaturaSC.transferFrom(_from, _to, _matriculaId);
     }
 
+    /**
+     * @dev Modificador para verificar que la dirección que realiza una llamada es el owner del contrato
+     *
+     * Validaciones:
+     *
+     * - `msg.sender` debe corresponder con un sc registrado como asignatura ERC721
+     **/
     modifier onlyOwner(){
         require(msg.sender == _owner, 'Ownable: caller is not the owner');
         _;

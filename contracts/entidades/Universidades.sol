@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 contract Universidades {
     using SafeMath for uint256;
 
+    // decimales usados en los tokens ECTS
     uint256 ectsTokenDecimals = 10 ** uint256(4);
 
     event PrecioExperimentabilidadActualizado(address _cuenta, uint8 _tipoPrecio, uint256 _precio);
@@ -22,9 +23,13 @@ contract Universidades {
     // Mapa que recoge las universidades disponibles en el sistema
     mapping(address => Universidad) universidades;
 
-    // obtener un listado que nos permita iterar por todas las universidades
+    // array que nos permita iterar por todas las universidades
     address[] univesidadesList;
 
+    /**
+     * @dev Obtener un listado que nos permita iterar por todas las universidades
+     *
+     */
     function getUniversidades() public view returns (address[] memory) {
         return univesidadesList;
     }
@@ -148,13 +153,18 @@ contract Universidades {
         return _creditos.mul(universidades[_universidad].preciosExperimentabilidad[_experimentabilidad].mul(universidades[_universidad].preciosAnioMatricula[_anioMatricula]));
     }
 
+    /**
+     * @dev Modificador para verificar que la cuenta pasada como parámetros es una universidad valida
+     *
+     */
     function isUniversidad(address _cuenta) public view returns (bool){
         return universidades[_cuenta].valido;
     }
 
     /**
-     * Modificador para verificar que la cuenta corresponde con una universidad valida
-     * */
+     * @dev Modificador para verificar que la cuenta corresponde con una universidad valida
+     *
+     */
     modifier onlyUniversidad() {
         if ( universidades[msg.sender].valido ) {
             _;
