@@ -1,6 +1,5 @@
 pragma solidity ^0.5.0;
 
-// import "github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 import "./ECTSERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
@@ -8,9 +7,14 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 contract ECTSToken is ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
+    // variables para inicializar el número de tokens ECTS iniciales disponibles
+    // créditos por grado aprox.
     uint256 _maxCreditosCurso = 240;
+    // máx alumnos por grado aprox.
     uint256 _maxAlumnos = 5000;
+    // max grados por universidad aprox.
     uint256 _maxGrados = 500;
+    // universidades totales aprox.
     uint256 _maxUniversidades = 200;
 
     // precio base en weis de la mínima parte de un crédito ETCS
