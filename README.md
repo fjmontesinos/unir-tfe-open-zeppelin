@@ -8,6 +8,11 @@ El objetivo principal del proyecto es establecer un sistema basado en blockchain
 
 En el repositorio [unir-tfe-dapp](https://github.com/fjmontesinos/unir-tfe-dapp) se encuentra el código necesario para la dapp desarrollando con Angular 8.
 
+## Despliegue de la aplicación
+
+Para desplegar la aplicación, lanzar y probar el proyecto de una forma integral se puede consultar el capítulo 6 de la [memoria](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/docs)
+
+
 ## Tests 
 
 A continuación se recogen diferentes ejemplos de pruebas que se pueden realizar desde truffle console. No obstante estas pruebas se encuentran recogidas en los [tests](https://github.com/fjmontesinos/unir-tfe-open-zeppelin/tree/master/test) correspondientes del proyecto y se pueden lanzar mediante el comando:
