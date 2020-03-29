@@ -8,9 +8,14 @@ contract AsignaturaToken is ERC721Metadata {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
+
+    // owner del contrato
     address private _owner;
+    // cŕeditos que supone realizar la asginatura
     uint256 private _creditos;
+    // grado de experimentalidad de la asignatura, valor entre 0 y 3
     uint256 private _experimentabilidad;
+    // nota mínima para aprobar basada en dos decimales, i.e. 500 = 5
     uint256 internal _notaMinimaAprobado = 500;
 
     struct Asignatura {
@@ -25,10 +30,14 @@ contract AsignaturaToken is ERC721Metadata {
         bool valida;
     }
 
+    // matrículas registradas on-chain
     mapping (uint256 => Asignatura) private _matriculas;
+    // años de matrícula por alumno para calcular el precio seǵun el año de matrícula
     mapping (address => uint256) private _aniosMatricula;
+    // configuración de profesores por asignatura para cada universidad
     mapping (address => address) private _universidadesProfesores;
 
+    // eventos
     event UniversidadRegistrada(address universidad, address profesor, address asignatura);
     event AlumnoMatriculado(address universidad, address profesor, address asignatura,
                             address alumno, string cursoAcademico, uint256 matriculaId);
@@ -43,7 +52,11 @@ contract AsignaturaToken is ERC721Metadata {
             setEstado(estadoAddress);
         }
 
-    function mintMatricula(address universidad, address profesor, address alumno, string memory cursoAcademico) public returns (uint256) {
+    /**
+     * @dev Permite minteado de un nuevo token ERC721 para un alumno en el momento de matricularese un alumno en una asignatura.
+     *
+     */
+    function mintMatricula(address universidad, address profesor, address alumno, string memory cursoAcademico) internal returns (uint256) {
         _tokenIds.increment();
 
         uint256 nuevaMatriculaId = _tokenIds.current();
@@ -57,6 +70,15 @@ contract AsignaturaToken is ERC721Metadata {
         return nuevaMatriculaId;
     }
 
+    /**
+    * @dev Permite al owner de la asignatura registrar una universidad y un profesor en ella.
+    *
+    * Validaciones:
+    *
+    * - `universidad` Debe corresponder con una universidad registrada
+    * - `profesor` Debe corresponder con un profesor registrado
+    *
+    */
     function registrarUniversidadProfesor(address universidad, address profesor) public onlyOwner {
         require(_estadoSC.isUniversidad(universidad), "Universidad no registrada");
         require(_estadoSC.isProfesor(profesor), "Profesor no registrado");
@@ -65,6 +87,7 @@ contract AsignaturaToken is ERC721Metadata {
 
     /**
      * @dev Retorna el profesor configurado para una universidad
+     *
      */
     function getProfesorUniversidad(address universidad) public view returns (address) {
         return _universidadesProfesores[universidad];
@@ -72,7 +95,14 @@ contract AsignaturaToken is ERC721Metadata {
 
     /**
      * @dev Permite actualizar el profesor de una asignatura en una universidad
-     **/
+     *
+     * Validaciones:
+     *
+     * - `msg.sender` Debe corresponder con una universidad registrada
+     * - `profesor` Debe corresponder con un profesor registrado
+     * - `msg.sender` NO debe corresponder con una universidad registrada ya en la asignatura
+     *
+     */
     function updateProfesor(address _profesor) public {
         require(_estadoSC.isUniversidad(msg.sender), "Universidad no registrada");
         require(_estadoSC.isProfesor(_profesor), "Profesor no registrado");
@@ -81,14 +111,19 @@ contract AsignaturaToken is ERC721Metadata {
         _universidadesProfesores[msg.sender] = _profesor;
     }
 
+
+    /**
+     * @dev Retorna el año de matŕicula que corresponde a un alumno pasado como parámetro
+     *
+     */
     function getAnioMatricula(address _alumno) public view returns (uint256) {
         if(_aniosMatricula[_alumno] >= 3) return 3;
         else return _aniosMatricula[_alumno];
     }
 
     /**
-     * @dev Throws si se llama por una cuenta que no sea el operador de administración o el owner del token.
-     * fj2m 20200301
+     * @dev Throws si se llama por una cuenta que el owner del token.
+     *
      */
     modifier onlyOwner(){
         require(msg.sender == _owner, 'Ownable: caller is not the owner');
@@ -98,6 +133,11 @@ contract AsignaturaToken is ERC721Metadata {
     /**
     * @dev Permite a un alumno matricularse en el sistema previo pago de los tokens necesarios
     *
+    * Validaciones:
+    *
+    * - `universidad` Debe corresponder con una universidad registrada
+    * - `msg.sender` Debe corresponder con un alumno registrado
+    * - `universidad` Debe corresponder con una universidad registrada ya en la asignatura
     *
     */
     function matricular(address universidad, string memory cursoAcademico) public returns (uint256) {
@@ -121,6 +161,11 @@ contract AsignaturaToken is ERC721Metadata {
         return matriculaId;
     }
 
+    /**
+     * @dev Retorna una matŕicula por su id, retorna la universidad, el profesor, el alumno, la nota, si está evaluado o no y
+     * en el caso de estar evaluado si está aprobada
+     *
+     */
     function getMatricula(uint256 matriculaId) public view returns (address universidad,
                                                                     address profesor, address alumno,
                                                                     uint256 nota, bool aprobado,
@@ -130,6 +175,18 @@ contract AsignaturaToken is ERC721Metadata {
             _matriculas[matriculaId].nota, _matriculas[matriculaId].aprobado, _matriculas[matriculaId].evaluado);
     }
 
+    /**
+     * @dev Solicitar traslado de la matrícula a otra universidad
+     *
+     * Validaciones:
+     *
+     * - `matriculaId` Debe corresponder con una matrícula correcta y no evaluada
+     * - `alumno` Debe corresponder con el alumno asociado a la matrícula
+     * - `msg.sender` Debe corresponder con el profesor asociado a la matrícula y debe existir como profesor registrado en el sistema
+     * - `universidad` Debe corresponder con una universidad registrada ya en la asignatura
+     * - `nota` Nota debe ser <= 1000
+     *
+     */
     function evaluar(address alumno, uint256 matriculaId, uint256 nota) public {
         require(_matriculas[matriculaId].valida, 'Matrícula no valida');
         require(_matriculas[matriculaId].alumno == alumno, 'Matrícula no pertenece al alumno');
@@ -151,6 +208,14 @@ contract AsignaturaToken is ERC721Metadata {
 
     /**
      * @dev Solicitar traslado de la matrícula a otra universidad
+     *
+     * Validaciones:
+     *
+     * - `matriculaId` Debe corresponder con una matrícula correcta y aprobada
+     * - `universidadDestino` Debe corresponder con una universidad registrada en el sistema
+     * - `msg.sender` Debe corresponder con el alumno asociado a la matrícula y debe existir como alumno registrado en el sistema
+     * - `universidadDestino` Debe corresponder con una universidad registrada ya en la asignatura
+     *
      */
     function trasladar(uint256 matriculaId, address universidadDestino) public {
         require(_estadoSC.isAlumno(msg.sender), 'Alumno no registrado');
